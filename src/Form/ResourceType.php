@@ -83,18 +83,14 @@ class ResourceType extends AbstractType
                     'data_class' => 'Rafrsr\ResourceBundle\Entity\ResourceObject'
                 ]
             )
-            ->setAllowedTypes(
-                [
-                    'placeholder' => 'string',
-                ]
-            );
+            ->setAllowedTypes('placeholder', ['string']);
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
-    public function getName()
+    public function getBlockPrefix()
     {
-        return 'rafrsr_resource';
+       return 'rafrsr_resource';
     }
 }

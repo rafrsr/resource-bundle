@@ -10,6 +10,7 @@
 namespace Rafrsr\ResourceBundle\Annotations;
 
 use Doctrine\Common\Annotations\Annotation;
+use Rafrsr\ResourceBundle\Form\ResourceType;
 
 /**
  * @Annotation
@@ -36,6 +37,6 @@ class ResourceFile implements ResourceAnnotationInterface
      */
     public function getFormType()
     {
-        return 'rafrsr_resource';
+        return ResourceType::class;
     }
 }

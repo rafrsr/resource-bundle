@@ -10,6 +10,7 @@
 namespace Rafrsr\ResourceBundle\Annotations;
 
 use Doctrine\Common\Annotations\Annotation;
+use Rafrsr\ResourceBundle\Form\ResourceImageType;
 
 /**
  * @Annotation
@@ -42,6 +43,6 @@ class ResourceImage extends ResourceFile
      */
     public function getFormType()
     {
-        return 'rafrsr_resource_image';
+        return ResourceImageType::class;
     }
 }

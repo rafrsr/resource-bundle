@@ -70,11 +70,7 @@ class ResourceORMSubscriber implements EventSubscriber
             /** @var ResourceObject $resource */
             $resource = $event->getObject();
             if ($resource->getLocation() && $resource->getMapping()) {
-                $resolverName = $this->getLocationConfig('resolver', $resource->getLocation(), $this->config);
-                $resolver = $this->resolverManager->get($resolverName);
-                $resolver->setConfig($this->config);
-                $resource->setFile($resolver->getFile($resource));
-                $resource->setUrl($resolver->getUrl($resource));
+                $this->loadResource($resource);
             }
         }
     }
@@ -89,6 +85,7 @@ class ResourceORMSubscriber implements EventSubscriber
             $resource = $event->getObject();
 
             if ($resource->getLocation() && $resource->getMapping()) {
+                $this->loadResource($resource);
                 $this->pendingToRemove($resource);
             }
         }
@@ -107,6 +104,7 @@ class ResourceORMSubscriber implements EventSubscriber
                 $resolverName = $this->getLocationConfig('resolver', $resource->getLocation(), $this->config);
                 $resolver = $this->resolverManager->get($resolverName);
                 $resolver->setConfig($this->config);
+                $this->loadResource($resource);
                 $this->remove($resource, $resolver);
             }
         }
@@ -133,5 +131,21 @@ class ResourceORMSubscriber implements EventSubscriber
         if (isset($this->toRemove[md5($resource->getFile()->getFilename())])) {
             $resolver->deleteFile($resource);
         }
+    }
+
+    /**
+     * loadResource
+     *
+     * @param ResourceObject $resource
+     *
+     * @throws \Exception
+     */
+    protected function loadResource(ResourceObject $resource)
+    {
+        $resolverName = $this->getLocationConfig('resolver', $resource->getLocation(), $this->config);
+        $resolver = $this->resolverManager->get($resolverName);
+        $resolver->setConfig($this->config);
+        $resource->setFile($resolver->getFile($resource));
+        $resource->setUrl($resolver->getUrl($resource));
     }
 }

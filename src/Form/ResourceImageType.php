@@ -53,9 +53,9 @@ class ResourceImageType extends ResourceType
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'rafrsr_resource_image';
     }
