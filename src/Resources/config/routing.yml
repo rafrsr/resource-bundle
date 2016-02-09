@@ -1,0 +1,3 @@
+_rafrsr_resource_bundle:
+    resource: "@RafrsrResourceBundle/Controller"
+    type:     annotation

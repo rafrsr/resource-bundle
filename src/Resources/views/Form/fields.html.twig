@@ -1,0 +1,149 @@
+{# @var resource \Rafrsr\ResourceBundle\Entity\ResourceObject #}
+
+{% block rafrsr_resource_widget %}
+    <div class="input-file" id="{{ uniqid }}">
+        {{ block('rafrsr_resource_widget_html') }}
+    </div>
+{% endblock %}
+
+{% block rafrsr_resource_image_widget %}
+    <div class="input-file" id="{{ uniqid }}">
+        {% if preview %}
+            <div class="resource-thumbnail {{ preview_class }} {% if not resource %}hide{% endif %}" style="display: inline-block;margin-bottom: 5px" >
+                {% if resource %}<a href="{{ resource.url }}" target="_blank" data-pjax="false">{% endif %}
+                    <img src="{% if resource %}{{ resource.url }}?t={{ resource.updated.timestamp }}{% endif %}" alt="" style="max-width: {{ preview_max_width }}px; max-height: {{ preview_max_height }}px"/>
+                    {% if resource %}</a>{% endif %}
+            </div>
+        {% endif %}
+        {{ block('rafrsr_resource_widget_html') }}
+    </div>
+{% endblock %}
+
+
+{% block rafrsr_resource_widget_html %}
+    <div class="input-group">
+        <div class="input-group-addon">
+            <i class="{{ icon }}"></i>
+        </div>
+
+        {% set downloable = (download and resource)?true:false %}
+        {% if resource %}
+            <a href="{{ resource.url }}" target="_blank" class="input-downloable-name form-control" {% if not downloable %}style="display: none"{% endif %}>
+                {{ resource.url }}
+            </a>
+        {% endif %}
+        <div class="input-name form-control" {% if downloable %}style="display: none"{% endif %} data-placeholder="{{ placeholder }}">
+            {% if resource %}
+                {{ resource.name }}
+            {% else %}
+                {{ placeholder }}
+            {% endif %}
+        </div>
+        <div class="input-group-btn">
+            <div class="btn btn-default input-file-browse">
+                {% if resource %}
+                    <i class="fa fa-folder-open"></i> Change...
+                {% else %}
+                    <i class="fa fa-folder-open"></i> Browse...
+                {% endif %}
+            </div>
+
+            <div class="btn btn-default input-file-remove {% if not resource %}hide{% endif %}" title="Remove">
+                <i class="fa fa-trash-o"></i>
+            </div>
+        </div>
+    </div>
+    {% set attr = attr|merge({'class': 'hide'}) %}
+    {{- block('form_widget') -}}
+    <script>
+        $(document).ready(function () {
+            var $file = $('#{{ uniqid }}').find('input:file'),
+                    $container = $file.closest('.input-file'),
+                    $inputName = $container.find('.input-name'),
+                    $inputDownlableName = $container.find('.input-downloable-name'),
+                    $browseButton = $container.find('.input-file-browse'),
+                    $downloadButton = $container.find('.input-file-download'),
+                    $removeButton = $container.find('.input-file-remove'),
+                    $thumbnail = $container.find('.resource-thumbnail'),
+                    $deleteChk = $container.find(':checkbox');
+
+            $browseButton.off('click.fileupload').on('click.fileupload', function () {
+                $file.click();
+            });
+
+            $removeButton.off('click.fileupload').on('click.fileupload', function () {
+                $file.val('');
+                $file.removeName();
+                $inputName.html('');
+                $inputDownlableName.hide();
+                $inputName.show();
+                if ($inputName.data('placeholder')) {
+                    $inputName.html($inputName.data('placeholder'));
+                }
+                $browseButton.html('<i class="fa fa-folder-open"></i> Browse...');
+                $downloadButton.addClass('hide');
+                $removeButton.addClass('hide');
+                $file.data('thumbnail').slideUp('slow');
+
+                $deleteChk.prop('checked', true);
+            });
+
+            $file.data('inputName', $inputName);
+            $file.data('inputDownloableName', $inputDownlableName);
+            $file.data('browseBtn', $browseButton);
+            $file.data('downloadBtn', $downloadButton);
+            $file.data('removeBtn', $removeButton);
+            $file.data('thumbnail', $thumbnail);
+            $file.data('deleteChk', $deleteChk);
+            if ($thumbnail.length) {
+                $file.data('thumbnail-img', $thumbnail.find('img'));
+            }
+
+            $file.removeName = function () {
+                if ($file.attr('name')) {
+                    $file.data('name', $file.attr('name'));
+                    $file.removeAttr('name');
+                }
+            };
+            $file.removeName();
+
+            $file.off('change.fileupload').on('change.fileupload', {{ uniqid }}_changeImage);
+
+            function {{ uniqid }}_changeImage() {
+                var $file = $(this);
+
+                if (this.files.length == 0) {
+                    return;
+                }
+
+                if (!$file.attr('name')) {
+                    $file.attr('name', $file.data('name'))
+                }
+
+                $file.data('inputName').html(this.files[0].name).show();
+                $file.data('inputDownloableName').hide();
+                $file.data('browseBtn').html('<i class="fa fa-folder-open"></i> Change...');
+                $file.data('downloadBtn').addClass('hide');
+                $file.data('removeBtn').removeClass('hide');
+                $file.data('deleteChk').prop('checked', false);
+
+                if ($file.data('thumbnail').length) {
+                    {{ uniqid }}_loadImage(this.files[0], $file.data('thumbnail'));
+                }
+            }
+
+            function {{ uniqid }}_loadImage(file, $thumbnail) {
+                var reader = new FileReader(),
+                        $img = $thumbnail.find('img');
+
+                reader.onload = function (event) {
+                    $img.attr('src', event.target.result);
+                    $thumbnail.removeClass('hide').slideDown('slow');
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+{% endblock %}
+

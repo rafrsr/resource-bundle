@@ -1,2 +1,3 @@
 # resource-bundle
-Upload, save and manage resources like a entity.
+
+> **NOTE:** This bundle is under high development, **use at your own risk**

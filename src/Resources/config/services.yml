@@ -1,0 +1,53 @@
+services:
+  rafrsr_resource.form.uploader_guesser:
+      class: Rafrsr\ResourceBundle\Form\UploaderTypeGuesser
+      arguments: [@doctrine, @annotations.reader]
+      tags:
+          - { name: form.type_guesser }
+
+  rafrsr_resource.form.type.resource:
+      class: Rafrsr\ResourceBundle\Form\ResourceType
+      arguments: [@rafrsr_resource.form.event_subscriber.uploader]
+      tags:
+          - { name: form.type, alias: rafrsr_resource }
+
+  rafrsr_resource.form.type.resource_image:
+      class: Rafrsr\ResourceBundle\Form\ResourceImageType
+      arguments: [@rafrsr_resource.form.event_subscriber.uploader]
+      tags:
+          - { name: form.type, alias: rafrsr_resource_image }
+
+  rafrsr_resource.form.event_subscriber.uploader:
+      class: Rafrsr\ResourceBundle\EventListener\UploaderSubscriber
+      arguments: [@rafrsr_resource.loader, @doctrine.orm.entity_manager, @annotations.reader, "%rafrsr_resource.config%"]
+      public: false
+
+  rafrsr_resource.orm.subscriber:
+        class:  Rafrsr\ResourceBundle\EventListener\ResourceORMSubscriber
+        arguments:  [@rafrsr_resource.resolver_manager, "%rafrsr_resource.config%"]
+        tags:
+            -  { name: doctrine.event_subscriber}
+        public: false
+
+  rafrsr_resource.loader:
+        class: Rafrsr\ResourceBundle\Resource\ResourceLoader
+        arguments: [@annotations.reader, @rafrsr_resource.resolver_manager, @rafrsr_resource.transformer_manager, "%rafrsr_resource.config%"]
+
+  rafrsr_resource.resolver_manager:
+        class:  Rafrsr\ResourceBundle\Resource\ResolverManager
+
+  rafrsr_resource.resolver.local:
+        class:  Rafrsr\ResourceBundle\Resource\LocalResourceResolver
+        public: false
+        arguments: [@filesystem]
+        tags:
+            -  { name: rafrsr_resource.resolver , alias: local }
+
+  rafrsr_resource.transformer_manager:
+        class:  Rafrsr\ResourceBundle\Resource\FileTransformer\TransformerManager
+
+  rafrsr_resource.transformer.image:
+        class:  Rafrsr\ResourceBundle\Resource\FileTransformer\ImageTransformer
+        public: false
+        tags:
+            -  { name: rafrsr_resource.transformer}
