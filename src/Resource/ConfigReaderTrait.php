@@ -9,7 +9,7 @@
 
 namespace Rafrsr\ResourceBundle\Resource;
 
-use Rafrsr\ResourceBundle\Entity\ResourceObject;
+use Rafrsr\ResourceBundle\Model\ResourceObjectInterface;
 
 /**
  * ConfigReaderTrait
@@ -19,12 +19,12 @@ trait ConfigReaderTrait
     /**
      * get custom mapping for resource if have
      *
-     * @param array          $config   array of global resource config
-     * @param ResourceObject $resource resource
+     * @param array                   $config   array of global resource config
+     * @param ResourceObjectInterface $resource resource
      *
      * @return null|array
      */
-    protected function getResourceMapping($config, ResourceObject $resource)
+    protected function getResourceMapping($config, ResourceObjectInterface $resource)
     {
         if ($resource->getMapping() && isset($config['mappings'][$resource->getMapping()])) {
             return $config['mappings'][$resource->getMapping()];

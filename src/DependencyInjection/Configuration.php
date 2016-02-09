@@ -29,6 +29,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('rafrsr_resource');
 
+        $rootNode->children()->scalarNode('class')->isRequired()->end();
         $rootNode->children()->scalarNode('default_location')->isRequired()->end();
 
         /** @var NodeBuilder $locations */

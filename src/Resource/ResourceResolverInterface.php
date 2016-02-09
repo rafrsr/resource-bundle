@@ -9,7 +9,7 @@
 
 namespace Rafrsr\ResourceBundle\Resource;
 
-use Rafrsr\ResourceBundle\Entity\ResourceObject;
+use Rafrsr\ResourceBundle\Model\ResourceObjectInterface;
 use Symfony\Component\HttpFoundation\File\File;
 
 /**
@@ -30,36 +30,36 @@ interface ResourceResolverInterface
     /**
      * Get file instance for given resource
      *
-     * @param ResourceObject $resource
+     * @param ResourceObjectInterface $resource
      *
      * @return File
      */
-    public function getFile(ResourceObject $resource);
+    public function getFile(ResourceObjectInterface $resource);
 
     /**
      * Get url to access to the file
      *
-     * @param ResourceObject $resource
+     * @param ResourceObjectInterface $resource
      *
      * @return String
      */
-    public function getUrl(ResourceObject $resource);
+    public function getUrl(ResourceObjectInterface $resource);
 
     /**
      * Save the file
      *
-     * @param ResourceObject $resource resource object containing the tmp file to save
+     * @param ResourceObjectInterface $resource resource object containing the tmp file to save
      *
      * @return bool true on success or false on failure.
      */
-    public function saveFile(ResourceObject $resource);
+    public function saveFile(ResourceObjectInterface $resource);
 
     /**
      * Delete the file related to the resource
      *
-     * @param ResourceObject $resource resource containing the file
+     * @param ResourceObjectInterface $resource resource containing the file
      *
      * @return bool true on success or false on failure.
      */
-    public function deleteFile(ResourceObject $resource);
+    public function deleteFile(ResourceObjectInterface $resource);
 }

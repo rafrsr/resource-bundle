@@ -9,8 +9,8 @@
 
 namespace Rafrsr\ResourceBundle\Controller;
 
+use Rafrsr\ResourceBundle\Model\ResourceObjectInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Rafrsr\ResourceBundle\Entity\ResourceObject;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,12 +26,12 @@ class ResourceController extends Controller
      *
      * @Route(path="/{resource}/{name}")
      *
-     * @param ResourceObject $resource
-     * @param string         $name
+     * @param ResourceObjectInterface $resource
+     * @param string                  $name
      *
      * @return BinaryFileResponse
      */
-    public function getAction(ResourceObject $resource, $name)
+    public function getAction(ResourceObjectInterface $resource, $name)
     {
         if ($name != $resource->getName()) {
             throw new NotFoundHttpException;

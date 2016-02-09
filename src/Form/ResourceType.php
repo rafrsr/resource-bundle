@@ -9,9 +9,9 @@
 
 namespace Rafrsr\ResourceBundle\Form;
 
-use Rafrsr\ResourceBundle\Entity\ResourceObject;
 use Rafrsr\ResourceBundle\Form\DataTransformer\ResourceTransformer;
 use Rafrsr\ResourceBundle\EventListener\UploaderSubscriber;
+use Rafrsr\ResourceBundle\Model\ResourceObjectInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -30,13 +30,21 @@ class ResourceType extends AbstractType
     private $subscriber;
 
     /**
+     * @var string
+     */
+    private $class;
+
+    /**
      * Constructor
      *
      * @param UploaderSubscriber $subscriber
+     * @param array              $config resource bundle config
      */
-    public function __construct(UploaderSubscriber $subscriber)
+    public function __construct(UploaderSubscriber $subscriber, $config)
     {
         $this->subscriber = $subscriber;
+
+        $this->class = $config['class'];
     }
 
     /**
@@ -55,7 +63,7 @@ class ResourceType extends AbstractType
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        /** @var ResourceObject $resource */
+        /** @var ResourceObjectInterface $resource */
         $resource = $form->getData();
 
         $view->vars['uniqid'] = 'uploader_' . substr(md5(mt_rand()), 0, 8);
@@ -80,7 +88,7 @@ class ResourceType extends AbstractType
                     'icon' => 'fa fa-file-o',
                     'download' => true,
                     'type' => 'file',
-                    'data_class' => 'Rafrsr\ResourceBundle\Entity\ResourceObject'
+                    'data_class' => $this->class
                 ]
             )
             ->setAllowedTypes('placeholder', ['string']);
@@ -91,6 +99,6 @@ class ResourceType extends AbstractType
      */
     public function getBlockPrefix()
     {
-       return 'rafrsr_resource';
+        return 'rafrsr_resource';
     }
 }

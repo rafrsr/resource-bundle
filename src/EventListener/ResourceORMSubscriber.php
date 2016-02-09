@@ -9,7 +9,7 @@
 
 namespace Rafrsr\ResourceBundle\EventListener;
 
-use Rafrsr\ResourceBundle\Entity\ResourceObject;
+use Rafrsr\ResourceBundle\Model\ResourceObjectInterface;
 use Rafrsr\ResourceBundle\Resource\ConfigReaderTrait;
 use Rafrsr\ResourceBundle\Resource\ResolverManager;
 use Doctrine\Common\EventSubscriber;
@@ -66,8 +66,8 @@ class ResourceORMSubscriber implements EventSubscriber
      */
     public function postLoad(LifecycleEventArgs $event)
     {
-        if ($event->getObject() instanceof ResourceObject) {
-            /** @var ResourceObject $resource */
+        if ($event->getObject() instanceof ResourceObjectInterface) {
+            /** @var ResourceObjectInterface $resource */
             $resource = $event->getObject();
             if ($resource->getLocation() && $resource->getMapping()) {
                 $this->loadResource($resource);
@@ -80,8 +80,8 @@ class ResourceORMSubscriber implements EventSubscriber
      */
     public function preRemove(LifecycleEventArgs $event)
     {
-        if ($event->getObject() instanceof ResourceObject) {
-            /** @var ResourceObject $resource */
+        if ($event->getObject() instanceof ResourceObjectInterface) {
+            /** @var ResourceObjectInterface $resource */
             $resource = $event->getObject();
 
             if ($resource->getLocation() && $resource->getMapping()) {
@@ -96,8 +96,8 @@ class ResourceORMSubscriber implements EventSubscriber
      */
     public function postRemove(LifecycleEventArgs $event)
     {
-        if ($event->getObject() instanceof ResourceObject) {
-            /** @var ResourceObject $resource */
+        if ($event->getObject() instanceof ResourceObjectInterface) {
+            /** @var ResourceObjectInterface $resource */
             $resource = $event->getObject();
 
             if ($resource->getLocation() && $resource->getMapping()) {
@@ -113,9 +113,9 @@ class ResourceORMSubscriber implements EventSubscriber
     /**
      * addToRemove
      *
-     * @param ResourceObject $resource
+     * @param ResourceObjectInterface $resource
      */
-    public function pendingToRemove(ResourceObject $resource)
+    public function pendingToRemove(ResourceObjectInterface $resource)
     {
         $this->toRemove[md5($resource->getFile()->getFilename())] = $resource;
     }
@@ -123,10 +123,10 @@ class ResourceORMSubscriber implements EventSubscriber
     /**
      * remove
      *
-     * @param ResourceObject            $resource
+     * @param ResourceObjectInterface   $resource
      * @param ResourceResolverInterface $resolver
      */
-    public function remove(ResourceObject $resource, ResourceResolverInterface $resolver)
+    public function remove(ResourceObjectInterface $resource, ResourceResolverInterface $resolver)
     {
         if (isset($this->toRemove[md5($resource->getFile()->getFilename())])) {
             $resolver->deleteFile($resource);
@@ -136,11 +136,11 @@ class ResourceORMSubscriber implements EventSubscriber
     /**
      * loadResource
      *
-     * @param ResourceObject $resource
+     * @param ResourceObjectInterface $resource
      *
      * @throws \Exception
      */
-    protected function loadResource(ResourceObject $resource)
+    protected function loadResource(ResourceObjectInterface $resource)
     {
         $resolverName = $this->getLocationConfig('resolver', $resource->getLocation(), $this->config);
         $resolver = $this->resolverManager->get($resolverName);

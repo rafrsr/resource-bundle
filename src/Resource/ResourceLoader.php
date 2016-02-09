@@ -10,7 +10,7 @@
 namespace Rafrsr\ResourceBundle\Resource;
 
 use Rafrsr\ResourceBundle\Annotations\ResourceAnnotationInterface;
-use Rafrsr\ResourceBundle\Entity\ResourceObject;
+use Rafrsr\ResourceBundle\Model\ResourceObjectInterface;
 use Rafrsr\ResourceBundle\Resource\FileTransformer\TransformerManager;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Inflector\Inflector;
@@ -45,6 +45,11 @@ class ResourceLoader
     private $config;
 
     /**
+     * @var string
+     */
+    private $class;
+
+    /**
      * Constructor
      *
      * @param Reader             $reader             Annotation Reader
@@ -58,6 +63,8 @@ class ResourceLoader
         $this->resolverManager = $resolverManager;
         $this->transformerManager = $transformerManager;
         $this->config = $config;
+
+        $this->class = $config['class'];
     }
 
     /**
@@ -67,13 +74,13 @@ class ResourceLoader
      * @param string $property property to use, should have a valid resource annotation
      * @param File   $file     instance of file to inject
      *
-     * @return ResourceObject the resource object instance
+     * @return ResourceObjectInterface the resource object instance
      * @throws \Exception
      */
     public function load(&$context, $property, File $file)
     {
         $accessor = new PropertyAccessor();
-        if (($resource = $accessor->getValue($context, $property)) && $resource instanceof ResourceObject) {
+        if (($resource = $accessor->getValue($context, $property)) && $resource instanceof ResourceObjectInterface) {
             $resource->setFile($file); //update
 
             //delete any existent
@@ -85,7 +92,8 @@ class ResourceLoader
             }
 
         } else {
-            $resource = new ResourceObject(); //create
+            /** @var ResourceObjectInterface $resource */
+            $resource = new $this->class; //create
             $resource->setFile($file);
         }
 
@@ -142,11 +150,11 @@ class ResourceLoader
     /**
      * Set the name of resource using the context and resource mapping information
      *
-     * @param ResourceObject $resource
-     * @param string         $baseName default name
-     * @param object         $context  context to resolve tokens
+     * @param ResourceObjectInterface $resource
+     * @param string                  $baseName default name
+     * @param object                  $context  context to resolve tokens
      */
-    protected function setResourceName(ResourceObject $resource, $baseName = null, $context = null)
+    protected function setResourceName(ResourceObjectInterface $resource, $baseName = null, $context = null)
     {
         if ($baseName) {
             if (strpos($baseName, $resource->getFile()->guessExtension()) === false) {

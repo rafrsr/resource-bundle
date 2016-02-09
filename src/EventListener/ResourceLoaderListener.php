@@ -9,7 +9,7 @@
 
 namespace Rafrsr\ResourceBundle\EventListener;
 
-use Rafrsr\ResourceBundle\Entity\ResourceObject;
+use Rafrsr\ResourceBundle\Model\ResourceObjectInterface;
 use Rafrsr\ResourceBundle\Resource\ResourceLoader;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Symfony\Component\HttpFoundation\File\File;
@@ -77,7 +77,7 @@ class ResourceLoaderListener
             if ($this->accessor->isReadable($this->context, $this->property)
                 && $resource = $this->accessor->getValue($this->context, $this->property)
             ) {
-                if ($resource instanceof ResourceObject) {
+                if ($resource instanceof ResourceObjectInterface) {
                     $resource = $this->loader->load($this->context, $this->property, $this->file);
 
                     //to avoid bubbling with the preUpdate
@@ -94,7 +94,7 @@ class ResourceLoaderListener
                 if ($this->accessor->isReadable($this->context, $this->property)
                     && $event->getObject() == $this->accessor->getValue($this->context, $this->property)
                 ) {
-                    if (($resource = $event->getObject()) && $resource instanceof ResourceObject) {
+                    if (($resource = $event->getObject()) && $resource instanceof ResourceObjectInterface) {
                         $this->loader->load($this->context, $this->property, $this->file);
 
                         //to avoid bubbling with the preUpdate
@@ -118,7 +118,7 @@ class ResourceLoaderListener
         if ($this->accessor->isReadable($this->context, $this->property)
             && $event->getObject() == $this->accessor->getValue($this->context, $this->property)
         ) {
-            if (($resource = $event->getObject()) && $resource instanceof ResourceObject) {
+            if (($resource = $event->getObject()) && $resource instanceof ResourceObjectInterface) {
                 $this->loader->load($this->context, $this->property, $this->file);
             }
         }

@@ -9,7 +9,7 @@
 
 namespace Rafrsr\ResourceBundle\Form\DataTransformer;
 
-use Rafrsr\ResourceBundle\Entity\ResourceObject;
+use Rafrsr\ResourceBundle\Model\ResourceObjectInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 
 /**
@@ -31,7 +31,7 @@ class ResourceTransformer implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
-        if ($value instanceof ResourceObject) {
+        if ($value instanceof ResourceObjectInterface) {
             if ($value->isDelete() && $value->getFile() == null) {
                 $value = null;
             } elseif (!$value->getId() && $value->getFile() == null) {

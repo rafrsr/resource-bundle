@@ -7,13 +7,13 @@ services:
 
   rafrsr_resource.form.type.resource:
       class: Rafrsr\ResourceBundle\Form\ResourceType
-      arguments: ["@rafrsr_resource.form.event_subscriber.uploader"]
+      arguments: ["@rafrsr_resource.form.event_subscriber.uploader", "%rafrsr_resource.config%"]
       tags:
           - { name: form.type }
 
   rafrsr_resource.form.type.resource_image:
       class: Rafrsr\ResourceBundle\Form\ResourceImageType
-      arguments: ["@rafrsr_resource.form.event_subscriber.uploader"]
+      arguments: ["@rafrsr_resource.form.event_subscriber.uploader", "%rafrsr_resource.config%"]
       tags:
           - { name: form.type }
 

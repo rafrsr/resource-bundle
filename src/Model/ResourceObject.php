@@ -7,27 +7,16 @@
  * @copyright 2016 Copyright(c) - All rights reserved.
  */
 
-namespace Rafrsr\ResourceBundle\Entity;
+namespace Rafrsr\ResourceBundle\Model;
 
 use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class ResourceObject
- *
- * @ORM\Entity()
- * @ORM\Table(name="resources")
  */
-class ResourceObject
+abstract class ResourceObject implements ResourceObjectInterface
 {
-    /**
-     * @var string
-     *
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer", nullable=false, unique=true)
-     * @ORM\GeneratedValue()
-     */
-    protected $id;
 
     /**
      * Name of the mapping to use in order to recover the resource
@@ -107,7 +96,7 @@ class ResourceObject
     protected $delete;
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function __construct()
     {
@@ -115,15 +104,7 @@ class ResourceObject
     }
 
     /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
+     * @inheritdoc
      */
     public function getName()
     {
@@ -131,7 +112,7 @@ class ResourceObject
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getMapping()
     {
@@ -139,9 +120,7 @@ class ResourceObject
     }
 
     /**
-     * @param string $mapping
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function setMapping($mapping)
     {
@@ -151,9 +130,7 @@ class ResourceObject
     }
 
     /**
-     * @param string $name
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function setName($name)
     {
@@ -163,7 +140,7 @@ class ResourceObject
     }
 
     /**
-     * @return mixed
+     * @inheritdoc
      */
     public function getRelativePath()
     {
@@ -171,9 +148,7 @@ class ResourceObject
     }
 
     /**
-     * @param mixed $relativePath
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function setRelativePath($relativePath)
     {
@@ -183,7 +158,7 @@ class ResourceObject
     }
 
     /**
-     * @return File
+     * @inheritdoc
      */
     public function getFile()
     {
@@ -191,9 +166,7 @@ class ResourceObject
     }
 
     /**
-     * @param File $file
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function setFile($file)
     {
@@ -203,7 +176,7 @@ class ResourceObject
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getMimeType()
     {
@@ -211,9 +184,7 @@ class ResourceObject
     }
 
     /**
-     * @param string $mimeType
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function setMimeType($mimeType)
     {
@@ -223,7 +194,7 @@ class ResourceObject
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getSize()
     {
@@ -231,9 +202,7 @@ class ResourceObject
     }
 
     /**
-     * @param string $size
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function setSize($size)
     {
@@ -243,7 +212,7 @@ class ResourceObject
     }
 
     /**
-     * @return \DateTime
+     * @inheritdoc
      */
     public function getUpdated()
     {
@@ -251,11 +220,9 @@ class ResourceObject
     }
 
     /**
-     * @param \DateTime $updated
-     *
-     * @return $this
+     * @inheritdoc
      */
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
 
@@ -263,7 +230,7 @@ class ResourceObject
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getUrl()
     {
@@ -271,9 +238,7 @@ class ResourceObject
     }
 
     /**
-     * @param string $url
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function setUrl($url)
     {
@@ -283,7 +248,7 @@ class ResourceObject
     }
 
     /**
-     * @return boolean
+     * @inheritdoc
      */
     public function isDelete()
     {
@@ -291,9 +256,7 @@ class ResourceObject
     }
 
     /**
-     * @param boolean $delete
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function setDelete($delete)
     {
@@ -303,7 +266,7 @@ class ResourceObject
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getLocation()
     {
@@ -311,9 +274,7 @@ class ResourceObject
     }
 
     /**
-     * @param string $location
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function setLocation($location)
     {
@@ -323,7 +284,9 @@ class ResourceObject
     }
 
     /**
-     * @inheritDoc
+     * __toString()
+     *
+     * @return string
      */
     public function __toString()
     {

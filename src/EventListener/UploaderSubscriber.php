@@ -11,7 +11,7 @@ namespace Rafrsr\ResourceBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Rafrsr\ResourceBundle\Annotations\ResourceAnnotationInterface;
-use Rafrsr\ResourceBundle\Entity\ResourceObject;
+use Rafrsr\ResourceBundle\Model\ResourceObjectInterface;
 use Rafrsr\ResourceBundle\Resource\ConfigReaderTrait;
 use Rafrsr\ResourceBundle\Resource\ResourceLoader;
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -86,9 +86,9 @@ class UploaderSubscriber implements EventSubscriberInterface
             return;
         }
 
-        /** @var ResourceObject $resource */
+        /** @var ResourceObjectInterface $resource */
         $resource = $event->getData();
-        if ($resource instanceof ResourceObject) {
+        if ($resource instanceof ResourceObjectInterface) {
             if ($resource && ($file = $resource->getFile()) instanceof UploadedFile) {
 
                 /** @var UploadedFile $file */

@@ -9,8 +9,8 @@
 
 namespace Rafrsr\ResourceBundle\Resource;
 
+use Rafrsr\ResourceBundle\Model\ResourceObjectInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Rafrsr\ResourceBundle\Entity\ResourceObject;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
@@ -54,13 +54,9 @@ class LocalResourceResolver implements ResourceResolverInterface
     }
 
     /**
-     * getFile
-     *
-     * @param ResourceObject $resource
-     *
-     * @return null|File
+     * @inheritdoc
      */
-    public function getFile(ResourceObject $resource)
+    public function getFile(ResourceObjectInterface $resource)
     {
         $path = $this->getLocationConfig('path', $resource->getLocation(), $this->config);
 
@@ -76,13 +72,9 @@ class LocalResourceResolver implements ResourceResolverInterface
     }
 
     /**
-     * getUrl
-     *
-     * @param ResourceObject $resource
-     *
-     * @return null|string
+     * @inheritdoc
      */
-    public function getUrl(ResourceObject $resource)
+    public function getUrl(ResourceObjectInterface $resource)
     {
         $url = $this->getLocationConfig('url', $resource->getLocation(), $this->config);
         preg_match_all('/\{(\w+)\}/', $url, $matches);
@@ -102,7 +94,7 @@ class LocalResourceResolver implements ResourceResolverInterface
     /**
      * @inheritdoc
      */
-    public function saveFile(ResourceObject $resource)
+    public function saveFile(ResourceObjectInterface $resource)
     {
 
         $file = $resource->getFile();
@@ -116,13 +108,9 @@ class LocalResourceResolver implements ResourceResolverInterface
     }
 
     /**
-     * deleteFile
-     *
-     * @param ResourceObject $resource
-     *
-     * @return bool true on success or false on failure.
+     * @inheritdoc
      */
-    public function deleteFile(ResourceObject $resource)
+    public function deleteFile(ResourceObjectInterface $resource)
     {
         $path = $this->getLocationConfig('path', $resource->getLocation(), $this->config);
 
