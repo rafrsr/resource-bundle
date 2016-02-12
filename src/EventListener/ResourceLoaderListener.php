@@ -81,7 +81,7 @@ class ResourceLoaderListener
                     $resource = $this->loader->load($this->context, $this->property, $this->file);
 
                     //to avoid bubbling with the preUpdate
-                    $this->context = null;
+                    //$this->context = null;
 
                     $event->getEntityManager()->flush($resource);
                 }
@@ -98,7 +98,7 @@ class ResourceLoaderListener
                         $this->loader->load($this->context, $this->property, $this->file);
 
                         //to avoid bubbling with the preUpdate
-                        $this->context = null;
+                        //$this->context = null;
 
                         $event->getEntityManager()->flush($resource);
                     }

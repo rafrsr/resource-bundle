@@ -9,7 +9,10 @@
 
 namespace Rafrsr\ResourceBundle\Resource;
 
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Events;
 use Rafrsr\ResourceBundle\Annotations\ResourceAnnotationInterface;
+use Rafrsr\ResourceBundle\EventListener\ResourceLoaderListener;
 use Rafrsr\ResourceBundle\Model\ResourceObjectInterface;
 use Rafrsr\ResourceBundle\Resource\FileTransformer\TransformerManager;
 use Doctrine\Common\Annotations\Reader;
@@ -70,14 +73,15 @@ class ResourceLoader
     /**
      * Load a resource into a object property and return instance of resource
      *
-     * @param object $context  object to inject the resource
-     * @param string $property property to use, should have a valid resource annotation
-     * @param File   $file     instance of file to inject
+     * @param object        $context  object to inject the resource
+     * @param string        $property property to use, should have a valid resource annotation
+     * @param File          $file     instance of file to inject
+     * @param EntityManager $em       Entity manager instance, required in case of load the resource manually
      *
      * @return ResourceObjectInterface the resource object instance
      * @throws \Exception
      */
-    public function load(&$context, $property, File $file)
+    public function load(&$context, $property, File $file, EntityManager $em = null)
     {
         $accessor = new PropertyAccessor();
         if (($resource = $accessor->getValue($context, $property)) && $resource instanceof ResourceObjectInterface) {
@@ -143,6 +147,18 @@ class ResourceLoader
         $resource->setUrl($resolver->getUrl($resource));
 
         $accessor->setValue($context, $property, $resource);
+
+        if ($em) {
+            //prepare the listener to listen any save operation after resource load
+            $updater = new ResourceLoaderListener($this, $context, $property, $resource->getFile());
+            $em->getEventManager()->addEventListener(
+                [
+                    Events::postPersist,
+                    Events::preUpdate
+                ],
+                $updater
+            );
+        }
 
         return $resource;
     }
