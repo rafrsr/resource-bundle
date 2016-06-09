@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Class ResourceObject
  */
-abstract class ResourceObject implements ResourceObjectInterface
+abstract class ResourceObject implements ResourceObjectInterface, \Serializable
 {
 
     /**
@@ -281,6 +281,50 @@ abstract class ResourceObject implements ResourceObjectInterface
         $this->location = $location;
 
         return $this;
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function serialize()
+    {
+        $refClass = new \ReflectionClass($this);
+
+        $serialized = [];
+        foreach ($refClass->getProperties() as $property) {
+            $property->setAccessible(true);
+            $name = $property->getName();
+            $value = $property->getValue($this);
+            if ($value instanceof File) {
+                $value = $value->getRealPath();
+            }
+            $serialized[$name] = $value;
+        }
+
+        return serialize($serialized);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function unserialize($serialized)
+    {
+        $props = unserialize($serialized);
+
+        $refClass = new \ReflectionClass($this);
+
+        foreach ($props as $prop => $value) {
+            if ($refClass->hasProperty($prop)) {
+                $property = $refClass->getProperty($prop);
+                $property->setAccessible(true);
+
+                if ($property->name == 'file') {
+                    $value = new File($value);
+                }
+                $property->setValue($this, $value);
+            }
+        }
     }
 
     /**
