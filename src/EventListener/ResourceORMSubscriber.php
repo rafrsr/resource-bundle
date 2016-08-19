@@ -117,7 +117,9 @@ class ResourceORMSubscriber implements EventSubscriber
      */
     public function pendingToRemove(ResourceObjectInterface $resource)
     {
-        $this->toRemove[md5($resource->getFile()->getFilename())] = $resource;
+        if ($resource->getFile()) {
+            $this->toRemove[md5($resource->getFile()->getFilename())] = $resource;
+        }
     }
 
     /**
@@ -128,7 +130,7 @@ class ResourceORMSubscriber implements EventSubscriber
      */
     public function remove(ResourceObjectInterface $resource, ResourceResolverInterface $resolver)
     {
-        if (isset($this->toRemove[md5($resource->getFile()->getFilename())])) {
+        if ($resource->getFile() && isset($this->toRemove[md5($resource->getFile()->getFilename())])) {
             $resolver->deleteFile($resource);
         }
     }
