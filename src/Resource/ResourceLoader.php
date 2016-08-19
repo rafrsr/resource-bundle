@@ -18,6 +18,7 @@ use Rafrsr\ResourceBundle\Resource\FileTransformer\TransformerManager;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Inflector\Inflector;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
@@ -154,7 +155,7 @@ class ResourceLoader
             $em->getEventManager()->addEventListener(
                 [
                     Events::postPersist,
-                    Events::preUpdate
+                    Events::preUpdate,
                 ],
                 $updater
             );
@@ -174,7 +175,7 @@ class ResourceLoader
     {
         if ($baseName) {
             if (strpos($baseName, $resource->getFile()->guessExtension()) === false) {
-                $filename = $baseName . '.' . $resource->getFile()->guessExtension();
+                $filename = $baseName.'.'.$resource->getFile()->guessExtension();
             } else {
                 $filename = $baseName;
             }
@@ -183,14 +184,14 @@ class ResourceLoader
                 $filename = $resource->getName();
             } else {
                 //create unique name
-                $filename = sha1(uniqid(mt_rand(), true)) . '.' . $resource->getFile()->guessExtension();
+                $filename = sha1(uniqid(mt_rand(), true)).'.'.$resource->getFile()->guessExtension();
             }
         }
 
         $mapping = $this->getResourceMapping($this->config, $resource);
         if (isset($mapping['name'])) {
             $filename = $this->parseName($mapping['name'], $context, $baseName);
-            $filename .= '.' . $resource->getFile()->guessExtension();
+            $filename .= '.'.$resource->getFile()->guessExtension();
             $resource->setName($filename);
             $filename = basename($filename);
         }
@@ -209,7 +210,7 @@ class ResourceLoader
     protected function parseName($name, $context, $defaultName = null)
     {
         if ($context) {
-            preg_match_all('/\{(\w+)\}/', $name, $matches);
+            preg_match_all('/\{([\w\.]+)\}/', $name, $matches);
             $accessor = new PropertyAccessor();
             if (isset($matches[1])) {
                 foreach ($matches[1] as $token) {
@@ -228,7 +229,6 @@ class ResourceLoader
             while (strpos($name, '{*}') !== false) {
                 $name = preg_replace('/\{\*\}/', substr(sha1(uniqid(mt_rand())), 0, 8), $name, 1);
             }
-
         }
 
         return $name;

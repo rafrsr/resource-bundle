@@ -12,6 +12,7 @@ namespace Rafrsr\ResourceBundle\Resource;
 use Rafrsr\ResourceBundle\Model\ResourceObjectInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
@@ -34,13 +35,20 @@ class LocalResourceResolver implements ResourceResolverInterface
     protected $fileSystem;
 
     /**
+     * @var Session
+     */
+    protected $session;
+
+    /**
      * LocalResourceResolver constructor.
      *
      * @param Filesystem $fileSystem
+     * @param Session    $session
      */
-    public function __construct(Filesystem $fileSystem)
+    public function __construct(Filesystem $fileSystem, Session $session)
     {
         $this->fileSystem = $fileSystem;
+        $this->session = $session;
     }
 
     /**
@@ -64,8 +72,8 @@ class LocalResourceResolver implements ResourceResolverInterface
             $path .= $resource->getRelativePath();
         }
 
-        if (is_file($path . DIRECTORY_SEPARATOR . $resource->getName())) {
-            return new File($path . DIRECTORY_SEPARATOR . $resource->getName());
+        if (is_file($path.DIRECTORY_SEPARATOR.$resource->getName())) {
+            return new File($path.DIRECTORY_SEPARATOR.$resource->getName());
         }
 
         return null;
@@ -81,10 +89,24 @@ class LocalResourceResolver implements ResourceResolverInterface
         $accessor = new PropertyAccessor();
         if (isset($matches[1])) {
             foreach ($matches[1] as $token) {
-                if ($accessor->isReadable($resource, $token)) {
-                    $value = $accessor->getValue($resource, $token);
-                    $url = str_replace("{{$token}}", $value, $url);
+                if ($token === 'id') {
+                    //when mapping information contains {id}
+                    //for security reasons instead of set the real resource id
+                    //set a random value and save in session with the real id
+                    //the param converter resolve the real resource related for given hash
+                    //and keep the resource private for non public access
+                    $value = md5(mt_rand());
+                    $this->session->set('_resource/'.$value, $resource->getId());
+                } else {
+                    if ($accessor->isReadable($resource, $token)) {
+                        $value = $accessor->getValue($resource, $token);
+
+                    } else {
+                        $msg = sprintf('Invalid parameter "{%s}" in %s resource mapping.', $token, $resource->getLocation());
+                        throw new \InvalidArgumentException($msg);
+                    }
                 }
+                $url = str_replace("{{$token}}", $value, $url);
             }
         }
 
@@ -104,7 +126,7 @@ class LocalResourceResolver implements ResourceResolverInterface
             $path .= $resource->getRelativePath();
         }
 
-        $this->fileSystem->copy($file->getRealPath(), $path . DIRECTORY_SEPARATOR . $resource->getName());
+        $this->fileSystem->copy($file->getRealPath(), $path.DIRECTORY_SEPARATOR.$resource->getName());
     }
 
     /**
@@ -118,7 +140,7 @@ class LocalResourceResolver implements ResourceResolverInterface
             $path .= $resource->getRelativePath();
         }
 
-        $oldFile = $path . DIRECTORY_SEPARATOR . $resource->getName();
+        $oldFile = $path.DIRECTORY_SEPARATOR.$resource->getName();
 
         $this->fileSystem->remove($oldFile);
 

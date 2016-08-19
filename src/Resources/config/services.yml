@@ -39,7 +39,7 @@ services:
   rafrsr_resource.resolver.local:
         class:  Rafrsr\ResourceBundle\Resource\LocalResourceResolver
         public: false
-        arguments: ["@filesystem"]
+        arguments: ["@filesystem", "@session"]
         tags:
             -  { name: rafrsr_resource.resolver , alias: local }
 
