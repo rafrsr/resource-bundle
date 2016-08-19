@@ -9,7 +9,7 @@
 {% block rafrsr_resource_image_widget %}
     <div class="input-file" id="{{ uniqid }}">
         {% if preview %}
-            <div class="resource-thumbnail {{ preview_class }} {% if not resource %}hide{% endif %}" style="display: inline-block;margin-bottom: 5px" >
+            <div class="resource-thumbnail {{ preview_class }} {% if not resource %}hide{% endif %}" style="display: inline-block;margin-bottom: 5px">
                 {% if resource %}<a href="{{ resource.url }}" target="_blank" data-pjax="false">{% endif %}
                     <img src="{% if resource %}{{ resource.url }}?t={{ resource.updated.timestamp }}{% endif %}" alt="" style="max-width: {{ preview_max_width }}px; max-height: {{ preview_max_height }}px"/>
                     {% if resource %}</a>{% endif %}
@@ -53,8 +53,9 @@
             </div>
         </div>
     </div>
-    {% set attr = attr|merge({'class': 'hide'}) %}
-    {{- block('form_widget') -}}
+    <div style="display: none">
+        {{- block('form_widget') -}}
+    </div>
     <script>
         $(document).ready(function () {
             var $file = $('#{{ uniqid }}').find('input:file'),
