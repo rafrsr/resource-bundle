@@ -13,6 +13,8 @@ use Rafrsr\ResourceBundle\Form\DataTransformer\ResourceTransformer;
 use Rafrsr\ResourceBundle\EventListener\UploaderSubscriber;
 use Rafrsr\ResourceBundle\Model\ResourceObjectInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -54,8 +56,8 @@ class ResourceType extends AbstractType
     {
         $builder->addEventSubscriber($this->subscriber);
         $builder->addViewTransformer(new ResourceTransformer());
-        $builder->add('file', 'file');
-        $builder->add('delete', 'checkbox', ['required' => false]);
+        $builder->add('file', FileType::class);
+        $builder->add('delete', CheckboxType::class, ['required' => false]);
     }
 
     /**
