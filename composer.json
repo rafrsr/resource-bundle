@@ -1,45 +1,46 @@
 {
-  "name": "rafrsr/resource-bundle",
-  "description": "Upload, save and manage resources like a entity.",
-  "license": "MIT",
-  "type": "symfony-bundle",
-  "authors": [
-    {
-      "name": "Rafael SR",
-      "email": "raf.rsr@gmail.com",
-      "homepage": "https://github.com/rafrsr"
+    "name": "rafrsr/resource-bundle",
+    "description": "Upload, save and manage resources like a entity.",
+    "license": "MIT",
+    "type": "symfony-bundle",
+    "authors": [
+        {
+            "name": "Rafael SR",
+            "email": "raf.rsr@gmail.com",
+            "homepage": "https://github.com/rafrsr"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Rafrsr\\ResourceBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rafrsr\\ResourceBundle\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=5.6",
+        "ext-fileinfo": "*",
+        "symfony/console": "^3.4",
+        "symfony/form": "^3.4",
+        "symfony/framework-bundle": "^3.4",
+        "doctrine/annotations": "^1.2",
+        "doctrine/cache": "^1.5",
+        "doctrine/orm": "^2.6",
+        "doctrine/doctrine-bundle": "^1.8"
+    },
+    "require-dev": {
+        "imagine/imagine": "~0.5,<0.7",
+        "phpunit/phpunit": "^4.1|^5.1"
+    },
+    "suggest": {
+        "imagine/imagine": "Add it if you'd like to use image manipulation features."
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
     }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Rafrsr\\ResourceBundle\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Rafrsr\\ResourceBundle\\Tests\\": "tests/"
-    }
-  },
-  "require": {
-    "php": ">=5.6",
-    "ext-fileinfo": "*",
-    "symfony/symfony": "^3.0",
-    "doctrine/annotations": "^1.2",
-    "doctrine/cache": "^1.5",
-    "doctrine/orm": "^2.3",
-    "doctrine/doctrine-bundle": "^1.4"
-  },
-  "require-dev": {
-    "imagine/imagine": "~0.5,<0.7",
-    "phpunit/phpunit": "^4.1|^5.1",
-    "satooshi/php-coveralls": "dev-master"
-  },
-  "suggest": {
-    "imagine/imagine": "Add it if you'd like to use image manipulation features."
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.0.x-dev"
-    }
-  }
 }
